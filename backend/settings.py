@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-jciu*=+6bz44@q+bpr(7bli0r!vtt_1^jq22f#jo56!61e-)%n
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['https://jobapp-eni2.onrender.com','jobapp-eni2.onrender.com']
 
 
 # Application definition
