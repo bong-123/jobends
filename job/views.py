@@ -1,13 +1,10 @@
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from .models import  Company,  Position
-from .serializers import CompanySerializer, PositionSerializer
+from .models import Company, Position, EmployeePosition
+from .serializers import CompanySerializer, PositionSerializer, EmployeePositionSerializer
 
-
-
-
-# Position Views
+# --- Position Views ---
 class PositionListCreateView(generics.ListCreateAPIView):
     queryset = Position.objects.all()
     serializer_class = PositionSerializer
@@ -15,8 +12,17 @@ class PositionListCreateView(generics.ListCreateAPIView):
 class PositionDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Position.objects.all()
     serializer_class = PositionSerializer
-# Company Views
 
+# --- EmployeePosition Views ---
+class EmployeePositionListCreateView(generics.ListCreateAPIView):
+    queryset = EmployeePosition.objects.all()
+    serializer_class = EmployeePositionSerializer
+
+class EmployeePositionDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = EmployeePosition.objects.all()
+    serializer_class = EmployeePositionSerializer
+
+# --- Company Views ---
 class CompanyListCreateView(generics.ListCreateAPIView):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
@@ -27,13 +33,6 @@ class CompanyDetailView(generics.RetrieveUpdateDestroyAPIView):
 
 class CompanyByJobCategoryView(APIView):
     def get(self, request, jobcategory):
-        companies = Company.objects.filter(position__jobcategory=jobcategory)
+        companies = Company.objects.filter(employee_position__position__jobcategory=jobcategory)
         serializer = CompanySerializer(companies, many=True)
         return Response(serializer.data)
-    
-class CompanyDetailAPIView(APIView):
-    queryset = Company.objects.all()
-    serializer_class = CompanySerializer
-
-
-

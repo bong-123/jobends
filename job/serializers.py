@@ -1,26 +1,36 @@
 from rest_framework import serializers
-from .models import Company, Position
+from .models import Company, Position, EmployeePosition
 
-class PositionSerializer(serializers.ModelSerializer):
+
+class PositionSimpleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Position
-        fields = ['id', 'jobcategory', 'title']
+        fields = ['id', 'jobcategory']
+
+
+class EmployeePositionSerializer(serializers.ModelSerializer):
+    position = PositionSimpleSerializer(read_only=True)
+
+    class Meta:
+        model = EmployeePosition
+        fields = ['id', 'title', 'position']
+
+
+class PositionSerializer(serializers.ModelSerializer):
+    employee_positions = EmployeePositionSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Position
+        fields = ['id', 'jobcategory', 'employee_positions']
+
 
 class CompanySerializer(serializers.ModelSerializer):
-    position = PositionSerializer()  # Corrected to use 'position', not 'company'
+    employee_position = EmployeePositionSerializer(read_only=True)
 
     class Meta:
         model = Company
-        fields = ['id', 'position', 'name', 'location', 'description', 'mode', 'salary', 'salarystatus', 'date_applied', 'image']
-
-    # def create(self, validated_data):
-    #     company_data = validated_data.pop('company')
-    #     position_data = validated_data.pop('position')
-
-    #     company, _ = Company.objects.get_or_create(**company_data)
-    #     position, _ = Position.objects.get_or_create(**position_data)
-
-    #     job = Job.objects.create(
-    #         position=position, company=company, **validated_data
-    #     )
-    #     return job
+        fields = [
+            'id', 'employee_position', 'name', 'location', 'details', 'mode',
+            'salary', 'salarystatus', 'date_applied', 'image',
+            'qualifications', 'benefits', 'location_image'
+        ]
